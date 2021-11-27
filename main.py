@@ -20,6 +20,8 @@ def rectClicked(event , rect):
 
 game = Game(WINDOW_SIZE,FPS)
 
+BOARD_ROWS = WINDOW_SIZE[1] // CELL_SIZE
+BOARD_COLS = WINDOW_SIZE[0] // CELL_SIZE
 
 game.addEventListener(pygame.QUIT, EventListener(lambda event: game.quit()))
 
@@ -167,6 +169,7 @@ def boardClicked(event):
     if event.button != 1 or game.status == game.MAIN_MENU:
         return
     game.draw_status = True
+    boardDrow(event)
     
 
 
@@ -181,7 +184,8 @@ def boardDrow(event):
     x , y = event.pos
     row = y//CELL_SIZE
     col = x//CELL_SIZE
-    universe[row][col] = 1
+    if (row < BOARD_ROWS and col < BOARD_COLS):
+        universe[row][col] = 1
 
 def boardEraze(event):
     if event.button != 3 or game.status == game.MAIN_MENU:
@@ -189,7 +193,8 @@ def boardEraze(event):
     x , y = event.pos
     row = y//CELL_SIZE
     col = x//CELL_SIZE
-    universe[row][col] = 0
+    if (row < BOARD_ROWS and col < BOARD_COLS):
+        universe[row][col] = 0
 
 def setModePlay(event):
     if event.key == 13:
