@@ -18,7 +18,7 @@ def rectClicked(event , rect):
     return (x in range(xStart, xStop+1)) & (y in range(yStart, yStop+1))
 
 
-game = Game(WINDOW_SIZE,10)
+game = Game(WINDOW_SIZE,FPS)
 
 
 game.addEventListener(pygame.QUIT, EventListener(lambda event: game.quit()))
@@ -37,21 +37,29 @@ def onPressEscape(event):
 game.addEventListener(pygame.KEYUP, EventListener(onPressEscape))
 
 
-font = pygame.font.Font(pygame.font.match_font('ubuntu'), 30)
+font = pygame.font.Font(pygame.font.match_font('ubuntu'), (WINDOW_SIZE[1] // 100)*7)
 
+# Create Buttun
+def createButton(text):
+    BUTTON_WIDTH = (WINDOW_SIZE[0] // 100) * 40
+    BUTTON_HEIGHT = (BUTTON_WIDTH // 100) * 35
+    Button = pygame.Surface((BUTTON_WIDTH,BUTTON_HEIGHT))
+    Button.fill('black')
+    pygame.draw.polygon(Button, 'red', [(0,0), (BUTTON_WIDTH,0), (BUTTON_WIDTH,BUTTON_HEIGHT), (0,BUTTON_HEIGHT)] , (WINDOW_SIZE[0] // 100)*2)
+    Text = font.render(text, True, 'white')
+    TextRect = Text.get_rect(center=(BUTTON_WIDTH//2,BUTTON_HEIGHT//2))
+    Button.blit(Text, TextRect)
+    return Button
 
 # Main Menu
-mainMenu = pygame.Surface(game.display.get_size())
+mainMenu = pygame.Surface(WINDOW_SIZE)
 mainMenu.fill('gray')
 
-### Start Buttun
-startButton = pygame.Surface((200,50))
-startButton.fill('black')
-startButtonRect =  startButton.get_rect(center=(200,100))
-pygame.draw.polygon(startButton, 'red', [(0,0), (200,0), (200,50), (0,50)] , 5)
-startText = font.render('Start', True, 'white')
-startTextRect = startText.get_rect(center=(100,25))
-startButton.blit(startText, startTextRect)
+
+### Start Button
+startButton = createButton('Start')
+startButtonRect = startButton.get_rect(center=(WINDOW_SIZE[0]//2,(WINDOW_SIZE[1]//100)*30))
+
 mainMenu.blit(startButton, startButtonRect)
 
 def startButtonCliked(event):
@@ -63,15 +71,10 @@ game.addEventListener(pygame.MOUSEBUTTONDOWN, EventListener(startButtonCliked))
 
 ### Quit Buttun
 
-quitButton = pygame.Surface((200,50))
-quitButton.fill('black')
-quitButtonRect =  quitButton.get_rect(center=(200,200))
-pygame.draw.polygon(quitButton, 'red', [(0,0), (200,0), (200,50), (0,50)] , 5)
-quitText = font.render('Quit', True, 'white')
-quitTextRect = quitText.get_rect(center=(100,25))
-quitButton.blit(quitText, quitTextRect)
-mainMenu.blit(quitButton, quitButtonRect)
+quitButton = createButton('Quit')
+quitButtonRect =  quitButton.get_rect(center=(WINDOW_SIZE[0]//2,(WINDOW_SIZE[1]//100)*60))
 
+mainMenu.blit(quitButton, quitButtonRect)
 def quitButtonCliked(event):
     if game.status == game.MAIN_MENU and rectClicked(event, quitButtonRect):
        game.quit()
@@ -91,12 +94,12 @@ game.add(billitToDisplay, [mainMenu, (0,0)])
 universe = [[0 for j in range(BOARD_COLS)] for i in range(BOARD_ROWS)]
 
 
-board = pygame.Surface(game.display.get_size())
+board = pygame.Surface(WINDOW_SIZE)
 
 block = pygame.Surface((CELL_SIZE,CELL_SIZE))
 block.fill('blue')
 
-pygame.draw.polygon(block, 'red', ([1,1], [1,CELL_SIZE-2],[CELL_SIZE-2,CELL_SIZE-2],[CELL_SIZE-2,1]), 1)
+pygame.draw.polygon(block, 'black', ([1,1], [1,CELL_SIZE-2],[CELL_SIZE-2,CELL_SIZE-2],[CELL_SIZE-2,1]), 1)
 
 def RunGame():
     if game.status != game.PLAY_MODE:
